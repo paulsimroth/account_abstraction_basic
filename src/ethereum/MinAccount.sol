@@ -10,9 +10,17 @@ import {SIG_VALIDATION_FAILED, SIG_VALIDATION_SUCCESS} from "lib/account-abstrac
 import {IEntryPoint} from "lib/account-abstraction/contracts/interfaces/IEntryPoint.sol";
 
 contract MinAccount is IAccount, Ownable {
-    IEntryPoint private immutable i_entryPoint;
-
+    /////////////////
+    //// ERRORS /////
+    /////////////////
     error Account__NotFromEntryPoint();
+    error Account__NotFromEntryPointOrOwner();
+    error Account__CallFailed(bytes);
+
+    /////////////////
+    ///// STATE /////
+    /////////////////
+    IEntryPoint private immutable i_entryPoint;
 
     modifier requireFromEntryPoint() {
         if (msg.sender != address(i_entryPoint)) {
@@ -21,9 +29,22 @@ contract MinAccount is IAccount, Ownable {
         _;
     }
 
+    modifier requireFromEntryPointOrOwner() {
+        if (msg.sender != address(i_entryPoint) && msg.sender != owner()) {
+            revert Account__NotFromEntryPointOrOwner();
+        }
+        _;
+    }
+
     constructor(address entryPoint) Ownable(msg.sender) {
         i_entryPoint = IEntryPoint(entryPoint);
     }
+
+    receive() external payable {}
+
+    /////////////////
+    //// EXTERNAL ///
+    /////////////////
 
     /// @notice Signature is valid if it is the Contract Owner
     function validateUserOp(PackedUserOperation calldata userOp, bytes32 userOpHash, uint256 missingAccountFunds)
@@ -34,6 +55,17 @@ contract MinAccount is IAccount, Ownable {
         validationData = _validateSignature(userOp, userOpHash);
         _payPrefund(missingAccountFunds);
     }
+
+    function execute(address dest, uint256 value, bytes calldata functionData) external requireFromEntryPointOrOwner {
+        (bool success, bytes memory result) = dest.call{value: value}(functionData);
+        if (!success) {
+            revert Account__CallFailed(result);
+        }
+    }
+
+    /////////////////
+    //// INTERNAL ///
+    /////////////////
 
     /// @dev EIP-191 signed hash
     function _validateSignature(PackedUserOperation calldata userOp, bytes32 userOpHash)

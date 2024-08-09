@@ -9,6 +9,7 @@
 
 libs:
 - [eth-infinitism/account-abstraction](https://github.com/eth-infinitism/account-abstraction)
+- [openzeppelin-contracts](https://github.com/OpenZeppelin/openzeppelin-contracts)
 
 
 ## Foundry
