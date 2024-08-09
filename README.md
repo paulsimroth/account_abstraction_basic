@@ -1,7 +1,17 @@
+# Account Abstraction
+
+## About
+1. Create a basic Account Abstraction Account on Ethereum
+2. Create a basic Account Abstraction Account on zkSync
+3. Deploy and send a transaction
+
+## Used Ressources
+
+libs:
+- [eth-infinitism/account-abstraction](https://github.com/eth-infinitism/account-abstraction)
+
+
 ## Foundry
-
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
-
 Foundry consists of:
 
 -   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
