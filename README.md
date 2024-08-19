@@ -11,6 +11,9 @@ libs:
 - [eth-infinitism/account-abstraction](https://github.com/eth-infinitism/account-abstraction)
 - [openzeppelin-contracts](https://github.com/OpenZeppelin/openzeppelin-contracts)
 
+### zkSync
+
+To use the zkSync related contract you neeed to use [foundry-zksync](https://github.com/matter-labs/foundry-zksync) instead of regular foundry
 
 ## Foundry
 Foundry consists of:
